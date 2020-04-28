@@ -1,0 +1,89 @@
+--- 
+title: "Psychiatric Emergency Department Visits"
+author: "Liana Reveles"
+output:
+  prettydoc::html_pretty:
+    theme: hpstr
+    highlight: github
+---
+
+## **Background**
+> As the current sitation with Covid-19 continues, I have read articles about the side effects for the Stay-at-Home order and the ones that caught my eye were about an increase in abuse. Articles report an increase of reported abuse in adults; however, the reports in child abuse seemed to decrease (articles included below). As abuse can play a part in mental health, I wanted to look into the possiblity of a resulting side effect in the amount psychiatric referrals. As I currently work in the mental health field, with permission, I pulled data from a children's hospital emergency department (ED) for analysis on visits from January 1, 2018 - April 23, 2020 for additional information. 
+
+[Article 1](https://www.azfamily.com/news/continuing_coverage/coronavirus_coverage/side-effect-of-no-school-fewer-child-abuse-reports/article_93222788-7ad9-11ea-9737-131aec84859d.html)
+
+[Article 2](https://kpic.com/news/local/domestic-violece-reports-have-nearly-doubles-since-stay-at-home-order-was-put-into-place)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo =FALSE)
+
+library(googleVis)
+library(prettydoc)
+library (rmarkdown)
+library (curl)
+library(reshape2)
+
+op <- options(gvis.plot.tag='chart')
+```
+
+
+### **Primary Assessment Types**
+> First, we look at the primary reason for visits to the ED. This is referred to as Primary Assessment Type. Every patient that comes to the ED first gets assessed and then categorized in an assessment type. Below shows the counts of each type of assessment per year.  We see that **Psych** is the highest reason for presenting to the ED in **2018 (2013), 2019 (2070), 2020 (609)**. The next highest category is **Neglect Abuse** with **2018 (552), 2019 (473), 2020 (108)**. Thus the data shows that kids present to the ED for Psychiatric Assessments more often than other assessments.
+Note: Assessment types with counts less than 13 were omitted from the graph. 
+
+
+```{r type, results='asis', tidy=FALSE}
+
+type <- read.csv("https://raw.githubusercontent.com/kwe431/Project2-Data/master/dat_Type.csv")
+type.sel <- c("Animal Bite", "Consult Cancelled","DME",
+                "General Assault","In House Request", "Medical",
+            "Neglect Abuse", "Not Able to See", "Professional Consult", "Psych", "Safety & Education",
+            "Sexual Abuse/Assault", "Sexual Health/Pregnancy", 
+            "Support/Resources", "Trauma")
+
+type_plot <- subset(type, Primary.Assessment.Type %in% type.sel)
+
+
+type_plot <- subset(type_plot, Year >= 2018)
+
+plot.t <- dcast(type_plot, Primary.Assessment.Type ~ Year, value.var = "Count")
+PAT = gvisBarChart(plot.t, options=list(hAxes="[{logScale:false}]",
+                                            width=800, height=600))
+plot(PAT)
+
+```
+
+
+### **Referrals for ED Psych Visits ONLY**
+> Next, we look at referrals for the **Psychiatric Patient Population**, in other words, the person that prompted the child to present to the ED for a psychiatric assessment. We can clearly see that **Self-Referred/Family** referrals are the highest each year **2018 (623), 2019 (813), 2020 (315)**.  With the Blank category asside, **School** referrals are the next highest referrals for psyhicatic visits to the ED each year **2018 (340), 2019 (353), 2020 (92)**.
+Note: The **Blank** category shows that the information was not entered into the system. Unfortunately, this category is very high in **2018 (479)** and in **2019 (234)** making the data less reliable. However, the blank category is 0 for 2020.
+
+
+```{r ref, results='asis', tidy=FALSE}
+
+referral <- read.csv("https://raw.githubusercontent.com/kwe431/Project2-Data/master/dat_Ref.csv")
+source.sel <- c("Center for Child Protection", "Law Enforcement", "Local Mental Health Authority", "MCOT", "N/A",
+               "Other", "Outpt Mental Health Provider", "PCP", "PES", "School", "Self-Referred/Family", "(blank)")
+referral_plot <- subset(referral, Psych.Referral.Source %in% source.sel)
+
+
+referral_plot <- subset(referral_plot, Year >= 2018)
+
+plot.r = dcast(referral_plot, Psych.Referral.Source ~ Year, value.var = "Count")
+Ref = gvisBarChart(plot.r, options=list(hAxes="[{logScale:false}]",
+                                       width=800, height=600))
+plot(Ref)
+```
+
+
+## **Synopsis**
+
+> Since Self-Referred/Family and School referrals are the top referral sources for psychiatric visits, it raises the question whether/how the amount of pscyhiatric referrals will be affected during this time where children are spending more time at home and less time at school. Though the data here cannot answer that question, it can be seen that the two main psychiatric referral sources are the ones being impacted the most during the Stay-at-Home order. 
+
+
+Sources  
+* https://www.azfamily.com/
+* https://kpic.com/
+* https://redcap.ascension.org/txaus/
+
+

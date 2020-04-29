@@ -35,7 +35,7 @@ Note: Assessment types with counts less than 13 were omitted from the graph.
 ```{r type, results='asis', tidy=FALSE}
 
 type <- read.csv("https://raw.githubusercontent.com/kwe431/Project2-Data/master/dat_Type.csv")
-type.sel <- c("Animal Bite", "Consult Cancelled","DME",
+type.sel <- c("Animal Bite", "Consult Cancelled","Durable Medical Equipment",
                 "General Assault","In House Request", "Medical",
             "Neglect Abuse", "Not Able to See", "Professional Consult", "Psych", "Safety & Education",
             "Sexual Abuse/Assault", "Sexual Health/Pregnancy", 
@@ -62,8 +62,8 @@ Note: The **Blank** category shows that the information was not entered into the
 ```{r ref, results='asis', tidy=FALSE}
 
 referral <- read.csv("https://raw.githubusercontent.com/kwe431/Project2-Data/master/dat_Ref.csv")
-source.sel <- c("Center for Child Protection", "Law Enforcement", "Local Mental Health Authority", "MCOT", "N/A",
-               "Other", "Outpt Mental Health Provider", "PCP", "PES", "School", "Self-Referred/Family", "(blank)")
+source.sel <- c("Center for Child Protection", "Law Enforcement", "Local Mental Health Authority", "Mobile Crisis Outreach Team", "N/A",
+               "Other", "Outpt Mental Health Provider", "Primary Care Physician", "Psychiatric Emergency Services", "School", "Self-Referred/Family", "(blank)")
 referral_plot <- subset(referral, Psych.Referral.Source %in% source.sel)
 
 
